@@ -4,3 +4,6 @@
 
 [deploy]
   startCommand = "gunicorn StuQRCOde.wsgi:application --bind 0.0.0.0:$PORT"
+
+[nixpacks]
+  python = "3.12"

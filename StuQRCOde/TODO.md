@@ -1,4 +1,9 @@
-  # Forgot Password Implementation
+# Procfile Creation for Railway Deployment
+
+## Completed
+- [x] Create Procfile with gunicorn command for Django app deployment
+
+# Forgot Password Implementation
 
 ## Completed
 - [x] Add password reset forms to accounts/forms.py
