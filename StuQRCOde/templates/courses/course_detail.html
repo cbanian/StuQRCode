@@ -1,0 +1,154 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ course.name }} - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:home' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                    <li class="breadcrumb-item active">{{ course.name }}</li>
+                </ol>
+            </nav>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">{{ course.code }} - {{ course.name }}</h4>
+                        <div>
+                            {% if user.role == 'admin' or user.role == 'lecturer' %}
+                                {% if user.role == 'admin' or user.lecturer_profile == course.lecturer %}
+                                <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'courses:course_delete' course.pk %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>Course Description</h6>
+                            <p>{{ course.description|default:"No description provided." }}</p>
+                            
+                            <h6>Course Details</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Lecturer:</strong></td>
+                                    <td>{{ course.lecturer.user.get_full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Semester:</strong></td>
+                                    <td>{{ course.semester.name }} {{ course.semester.year }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Semester Start Date:</strong></td>
+                                    <td>{{ course.semester.start_date }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Semester End Date:</strong></td>
+                                    <td>{{ course.semester.end_date }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Credits:</strong></td>
+                                    <td>{{ course.credit_hours }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Created At:</strong></td>
+                                    <td>{{ course.created_at }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Semester Status:</strong></td>
+                                    <td>
+                                        {% if course.semester.is_active %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Quick Actions</h6>
+                            <div class="list-group">
+                                <a href="{% url 'attendance:course_attendance_report' course.pk %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-chart-bar"></i> View Attendance Report
+                                </a>
+                                {% if user.role == 'admin' or user.role == 'lecturer' %}
+                                    {% if user.role == 'admin' or user.lecturer_profile == course.lecturer %}
+                                    <a href="{% url 'courses:schedule_add' course.pk %}" class="list-group-item list-group-item-action">
+                                        <i class="fas fa-plus"></i> Add Schedule
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if schedules %}
+                    <hr>
+                    <h6>Class Schedules</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Room</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for schedule in schedules %}
+                                <tr>
+                                    <td>{{ schedule.get_day_display }}</td>
+                                    <td>{{ schedule.start_time|time:"H:i" }}</td>
+                                    <td>{{ schedule.end_time|time:"H:i" }}</td>
+                                    <td>{{ schedule.room }}</td>
+                                    <td>
+                                        {% if user.role == 'admin' or user.role == 'lecturer' %}
+                                            {% if user.role == 'admin' or user.lecturer_profile == course.lecturer %}
+                                            <a href="{% url 'courses:schedule_edit' schedule.pk %}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'courses:schedule_delete' schedule.pk %}" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <hr>
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No schedules added yet</h6>
+                        {% if user.role == 'admin' or user.role == 'lecturer' %}
+                            {% if user.role == 'admin' or user.lecturer_profile == course.lecturer %}
+                            <a href="{% url 'courses:schedule_add' course.pk %}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add First Schedule
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

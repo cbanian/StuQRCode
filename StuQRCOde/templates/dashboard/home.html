@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dashboard - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Welcome to StuQRCOde Dashboard</h1>
+            <p class="lead">Manage your courses, attendance, and more.</p>
+            
+            {% if user.is_authenticated %}
+                <div class="alert alert-info">
+                    <h4>Hello, {{ user.get_full_name }}!</h4>
+                    <p>You are logged in as a {{ user.role }}.</p>
+                    
+                    {% if user.role == 'lecturer' %}
+                        <a href="{% url 'dashboard:lecturer_dashboard' %}" class="btn btn-primary">Go to Lecturer Dashboard</a>
+                    {% elif user.role == 'student' %}
+                        <a href="{% url 'dashboard:student_dashboard' %}" class="btn btn-primary">Go to Student Dashboard</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <h4>Please Login</h4>
+                    <p>You need to login to access the dashboard features.</p>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login</a>
+                    <a href="{% url 'accounts:register' %}" class="btn btn-secondary">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

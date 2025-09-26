@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Edit Profile</h3>
+                </div>
+                <div class="card-body">
+                    {% if user.role == 'student' %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ student_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Update Student Profile</button>
+                        </form>
+                    {% elif user.role == 'lecturer' %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ lecturer_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Update Lecturer Profile</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info">
+                            Profile editing is not available for your role.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

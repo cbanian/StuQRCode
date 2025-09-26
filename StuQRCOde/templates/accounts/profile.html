@@ -1,0 +1,94 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}User Profile - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">User Profile</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="avatar-placeholder mb-3">
+                                <i class="fas fa-user-circle fa-5x text-muted"></i>
+                            </div>
+                            <h5>{{ user.get_full_name|default:user.username }}</h5>
+                            <span class="badge badge-primary">{{ user.get_role_display }}</span>
+                        </div>
+                        <div class="col-md-8">
+                            <h6>Account Information</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Username:</strong></td>
+                                    <td>{{ user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Role:</strong></td>
+                                    <td>{{ user.get_role_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>{{ user.phone|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Joined:</strong></td>
+                                    <td>{{ user.date_joined|date:"F d, Y" }}</td>
+                                </tr>
+                            </table>
+                            
+                            {% if user.role == 'student' and user.student_profile %}
+                            <hr>
+                            <h6>Student Profile</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Student ID:</strong></td>
+                                    <td>{{ user.student_profile.student_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Department:</strong></td>
+                                    <td>{{ user.student_profile.department }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Year of Study:</strong></td>
+                                    <td>{{ user.student_profile.year_of_study }}</td>
+                                </tr>
+                            </table>
+                            {% elif user.role == 'lecturer' and user.lecturer_profile %}
+                            <hr>
+                            <h6>Lecturer Profile</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Employee ID:</strong></td>
+                                    <td>{{ user.lecturer_profile.employee_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Department:</strong></td>
+                                    <td>{{ user.lecturer_profile.department }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Qualification:</strong></td>
+                                    <td>{{ user.lecturer_profile.qualification }}</td>
+                                </tr>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+                    <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Student Dashboard - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Student Dashboard</h1>
+            <p class="lead">Welcome, {{ user.get_full_name }}!</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>My Courses</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>View your enrolled courses and schedules.</p>
+                            <a href="{% url 'courses:my_courses' %}" class="btn btn-primary">View Courses</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Attendance</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Check your attendance records and scan QR codes.</p>
+                            <a href="{% url 'attendance:attendance_record_list' %}" class="btn btn-primary">View Attendance</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Profile</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Update your profile information.</p>
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-primary">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

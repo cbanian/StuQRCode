@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Attendance Analytics - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5 pt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">Attendance Analytics</h1>
+            
+            <!-- Analytics Overview -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Course Analytics Overview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Course</th>
+                                            <th>Total Classes</th>
+                                            <th>Total Students</th>
+                                            <th>Average Attendance</th>
+                                            <th>Total Present</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for analytics in course_analytics %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ analytics.course.name }}</strong><br>
+                                                <small class="text-muted">{{ analytics.course.code }}</small>
+                                            </td>
+                                            <td>{{ analytics.total_classes }}</td>
+                                            <td>{{ analytics.total_students }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if analytics.avg_attendance >= 75 %}success{% elif analytics.avg_attendance >= 50 %}warning{% else %}danger{% endif %}">
+                                                    {{ analytics.avg_attendance }}%
+                                                </span>
+                                            </td>
+                                            <td>{{ analytics.total_present }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">No analytics data available.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Daily Attendance Trend -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Daily Attendance Trend (Last 30 Days)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Total Records</th>
+                                            <th>Present Count</th>
+                                            <th>Attendance Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for daily in daily_attendance %}
+                                        <tr>
+                                            <td>{{ daily.date|date:"M d, Y" }}</td>
+                                            <td>{{ daily.total_records }}</td>
+                                            <td>{{ daily.present_count }}</td>
+                                            <td>
+                                                {% if daily.total_records > 0 %}
+                                                    {% widthratio daily.present_count daily.total_records 100 as rate %}
+                                                    <span class="badge bg-{% if rate >= 75 %}success{% elif rate >= 50 %}warning{% else %}danger{% endif %}">
+                                                        {{ rate }}%
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">No data</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">No daily attendance data available.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    // Add any JavaScript for charts or interactive features here
+    console.log('Attendance Analytics loaded');
+</script>
+{% endblock %}

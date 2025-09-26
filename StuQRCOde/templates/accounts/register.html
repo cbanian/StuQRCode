@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block title %}Register - StuAttend{% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggler = document.querySelector('.navbar-toggler');
+    if (toggler) {
+        toggler.removeAttribute('data-bs-toggle');
+        toggler.removeAttribute('data-bs-target');
+    }
+});
+</script>
+
+{% block content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="width: 100%; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <h2>Register</h2>
+        </div>
+        
+        <form method="post" style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div style="margin-bottom: 1rem;">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                           class="form-control {% if field.errors %}is-invalid{% endif %}" 
+                           id="{{ field.id_for_label }}" 
+                           name="{{ field.name }}" 
+                           value="{{ field.value|default:'' }}"
+                           {% if field.field.required %}required{% endif %}>
+                    {% if field.errors %}
+                        <div class="invalid-feedback">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div style="margin-bottom: 1rem;">
+                <input class="form-check-input" type="checkbox" id="terms" required>
+                <label class="form-check-label" for="terms">
+                    I agree to the <a href="#">Terms and Conditions</a>
+                </label>
+            </div>
+            
+            <button type="submit" style="width: 100%; padding: 0.75rem; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Register
+            </button>
+            
+            <div style="text-align: center; margin-top: 1rem;">
+                <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

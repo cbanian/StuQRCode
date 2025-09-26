@@ -1,0 +1,62 @@
+{% extends 'base/base.html' %}
+{% block title %}Login - StuAttend{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggler = document.querySelector('.navbar-toggler');
+    if (toggler) {
+        toggler.removeAttribute('data-bs-toggle');
+        toggler.removeAttribute('data-bs-target');
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div style="min-height: 65vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="width: 100%; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <h2>Login</h2>
+        </div>
+        
+        <form method="post" style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 1rem;">
+                <label for="{{ form.email.id_for_label }}">Email:</label>
+                <input type="email" 
+                       class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                       id="{{ form.email.id_for_label }}" 
+                       name="{{ form.email.name }}" 
+                       value="{{ form.email.value|default:'' }}"
+                       required>
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label for="{{ form.password.id_for_label }}">Password:</label>
+                <input type="password" 
+                       class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                       id="{{ form.password.id_for_label }}" 
+                       name="{{ form.password.name }}" 
+                       required>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" style="width: 100%; padding: 0.75rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Login
+            </button>
+            
+            <div style="text-align: center; margin-top: 1rem;">
+                <p><a href="{% url 'accounts:password_reset_request' %}">Forgot your password?</a></p>
+                <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

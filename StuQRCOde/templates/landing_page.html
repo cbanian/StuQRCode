@@ -1,0 +1,459 @@
+{% extends 'base/base.html' %} 
+{% load static %}
+
+{% block title %}StuAttend - Smart Attendance Tracking{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    padding: 60px 0;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-title {
+    line-height: 1.2;
+    word-wrap: break-word;
+    hyphens: auto;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.hero-buttons {
+    min-height: 48px;
+    margin-bottom: 2rem;
+}
+
+.hero-stats .row {
+    gap: 3rem;
+}
+
+.hero-stats .col-12 {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 576px) {
+    .hero-stats .col-sm-4 {
+        margin-bottom: 0;
+    }
+}
+
+.qr-preview-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3rem 2rem;
+}
+
+.qr-icon {
+    font-size: 200px;
+    min-width: 100px;
+    min-height: 100px;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 28px;
+}
+
+.step-number {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 5rem 1.5rem;
+        min-height: 80vh;
+    }
+    
+    .hero-content {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem !important;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .hero-btn {
+        width: 100%;
+        max-width: 280px;
+        padding: 0.875rem 1.75rem !important;
+        font-size: 1rem;
+        min-height: 48px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem !important;
+    }
+    
+    .qr-icon {
+        font-size: 100px !important;
+    }
+    
+    .qr-preview-card {
+        padding: 3rem 1.5rem !important;
+    }
+    
+    .feature-card {
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        margin-bottom: 1rem;
+    }
+    
+    .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 4rem 1.25rem;
+        min-height: 70vh;
+    }
+
+    .hero-title {
+        font-size: 1.9rem !important;
+    }
+
+    .hero-btn {
+        padding: 0.875rem 1.5rem !important;
+        font-size: 0.95rem;
+        min-height: 48px;
+    }
+
+    .stat-number {
+        font-size: 1.3rem !important;
+    }
+
+    .qr-icon {
+        font-size: 90px !important;
+    }
+
+    .feature-card {
+        padding: 1.75rem 1.25rem !important;
+    }
+
+    .feature-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-section {
+        padding: 3rem 1rem;
+        min-height: 60vh;
+    }
+
+    .hero-title {
+        font-size: 1.6rem !important;
+    }
+
+    .hero-btn {
+        padding: 0.875rem 1.25rem !important;
+        font-size: 0.9rem;
+    }
+
+    .stat-number {
+        font-size: 1.2rem !important;
+    }
+
+    .qr-icon {
+        font-size: 80px !important;
+    }
+
+    .feature-card {
+        padding: 1.5rem 1rem !important;
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .animate-fadeInUp {
+        animation-duration: 0.5s;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 animate-fadeInUp">
+                <div class="hero-content">
+                    <h1 class="display-3 fw-bold mb-4 text-white hero-title">
+                        Revolutionize Your
+                        <span class="text-warning">Login</span> System
+                    </h1>
+                    <p class="lead mb-4 text-white-50">
+                        Streamline your classroom attendance with cutting-edge QR code technology. 
+                        Save 80% of your time, eliminate errors, and generate comprehensive reports with just one click.
+                    </p>
+                    <div class="hero-buttons d-flex gap-3 flex-wrap">
+                        <a href="{% url 'accounts:register' %}" class="btn btn-warning btn-lg px-4 py-3 fw-semibold hero-btn">
+                            <i class="fas fa-rocket me-2"></i>
+                            Get Started Free
+                        </a>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg px-4 py-3 hero-btn">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Login to Dashboard
+                        </a>
+                    </div>
+                    <div class="hero-stats mt-4">
+                        <div class="row text-center">
+                            <div class="col-12 col-sm-4 mb-3">
+                                <h4 class="text-warning fw-bold stat-number">10K+</h4>
+                                <small class="text-white-50">Active Users</small>
+                            </div>
+                            <div class="col-12 col-sm-4 mb-3">
+                                <h4 class="text-warning fw-bold stat-number">30K+</h4>
+                                <small class="text-white-50">Classes Tracked</small>
+                            </div>
+                            <div class="col-12 col-sm-4 mb-3">
+                                <h4 class="text-warning fw-bold stat-number">99%</h4>
+                                <small class="text-white-50">Accuracy</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 animate-fadeInUp">
+                <div class="hero-image text-center">
+                    <div class="qr-preview-card glass p-4 rounded-4">
+                        <i class="fas fa-qrcode text-white qr-icon"></i>
+                        <div class="mt-3">
+                            <h5 class="text-white">Live QR Code</h5>
+                            <p class="text-white-50 small">Students scan to mark attendance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Powerful Features</h2>
+                <p class="lead text-muted">
+                    Everything you need to manage attendance efficiently in one comprehensive platform
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card mb-3 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Smart QR Codes</h4>
+                    <p class="text-muted">
+                        Generate dynamic QR codes for each session with time-based validity and anti-spoofing protection.
+                    </p>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-check text-success me-2"></i>Time-bound validity</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Anti-spoofing protection</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Real-time updates</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card mb-3 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Mobile Ready</h4>
+                    <p class="text-muted">
+                        Students can mark attendance using any smartphone with our responsive web interface.
+                    </p>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-check text-success me-2"></i>No app installation required</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Works on all devices</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Offline capability</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card mb-3 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Analytics & Reports</h4>
+                    <p class="text-muted">
+                        Get detailed insights into attendance patterns with customizable reports and visualizations.
+                    </p>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-check text-success me-2"></i>Real-time dashboards</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Export to PDF/Excel</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Email notifications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+                <p class="lead text-muted">
+                    Get started in just 3 simple steps
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 mb-3">
+                <div class="text-center">
+                    <div class="step-number">1</div>
+                    <h4 class="fw-bold mb-3">Create Account</h4>
+                    <p class="text-muted">
+                        Sign up as a lecturer or student and complete your profile setup in minutes.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-3">
+                <div class="text-center">
+                    <div class="step-number">2</div>
+                    <h4 class="fw-bold mb-3">Setup Courses</h4>
+                    <p class="text-muted">
+                        Lecturers can create courses and invite students to join their classes.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-3">
+                <div class="text-center">
+                    <div class="step-number">3</div>
+                    <h4 class="fw-bold mb-3">Start Tracking</h4>
+                    <p class="text-muted">
+                        Generate QR codes for each session and let students scan to mark attendance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-3">Ready to Transform Your Attendance System?</h2>
+                <p class="lead mb-0">
+                    Join thousands of educators who have already revolutionized their classroom management.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'accounts:register' %}" class="btn btn-warning btn-lg px-5 py-3 fw-semibold">
+                    Get Started Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggler = document.querySelector('.navbar-toggler');
+    if (toggler) {
+        toggler.removeAttribute('data-bs-toggle');
+        toggler.removeAttribute('data-bs-target');
+    }
+});
+</script>
+{% endblock %}

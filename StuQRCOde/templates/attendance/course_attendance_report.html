@@ -1,0 +1,136 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Course Attendance Report - {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Course Attendance Report - {{ course.name }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Course Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Course Details</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Course Code:</th>
+                                    <td>{{ course.code }}</td>
+                                </tr>
+                                    <th>Course Name:</th>
+                                    <td>{{ course.name }}</td>
+                                </tr>
+                                    <th>Lecturer:</th>
+                                    <td>{{ course.lecturer.user.get_full_name }}</td>
+                                </tr>
+                                    <th>Semester:</th>
+                                    <td>{{ course.semester.name }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Summary Statistics</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Total Students:</th>
+                                    <td>{{ attendance_data|length }}</td>
+                                </tr>
+                                    <th>Total Classes:</th>
+                                    <td>{{ attendance_data.0.records.count|default:0 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Data Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Total Classes</th>
+                                    <th>Present Classes</th>
+                                    <th>Absent Classes</th>
+                                    <th>Attendance %</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in attendance_data %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ data.student.student_id }}</td>
+                                    <td>{{ data.student.user.get_full_name }}</td>
+                                    <td>{{ data.total_classes }}</td>
+                                    <td>{{ data.present_classes }}</td>
+                                    <td>{{ data.absent_classes }}</td>
+                                    <td>
+                                        <span class="badge {% if data.percentage >= 75 %}bg-success{% elif data.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ data.percentage }}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if data.percentage >= 75 %}
+                                            <span class="badge bg-success">Good</span>
+                                        {% elif data.percentage >= 50 %}
+                                            <span class="badge bg-warning">Fair</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Poor</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No attendance records found for this course.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4">
+                        <a href="{% url 'attendance:attendance_reports' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Reports
+                        </a>
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="fas fa-print me-2"></i>Print Report
+                        </button>
+                        <a href="{% url 'attendance:course_attendance_report' course.id %}?format=pdf" class="btn btn-danger">
+                            <i class="fas fa-file-pdf me-2"></i>Download PDF
+                        </a>
+                        <a href="{% url 'attendance:course_attendance_report' course.id %}?format=excel" class="btn btn-success">
+                            <i class="fas fa-file-excel me-2"></i>Download Excel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style media="print">
+    .btn, .card-header .btn {
+        display: none !important;
+    }
+    .card {
+                border: none !important;
+            }
+            .table {
+                font-size: 12px;
+            }
+</style>
+{% endblock %}

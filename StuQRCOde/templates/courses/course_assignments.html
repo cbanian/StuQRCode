@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Course Assignments - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Course Assignments</h1>
+            <p class="lead">Manage course assignments and student enrollments</p>
+            
+            {% if courses %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Lecturer</th>
+                                <th>Semester</th>
+                                <th>Enrolled Students</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ course.code }}</td>
+                                <td>{{ course.name }}</td>
+                                <td>{{ course.lecturer.user.get_full_name }}</td>
+                                <td>{{ course.semester.name }} {{ course.semester.year }}</td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        Enrollment feature not implemented yet
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'courses:course_detail' course.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-user-plus"></i> Add Students
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    {% if user.role == 'lecturer' %}
+                        You don't have any courses assigned yet.
+                    {% else %}
+                        No courses found.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

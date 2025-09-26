@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Attendance Reports - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5 pt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">Attendance Reports</h1>
+            
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Courses</h5>
+                                    <h2 class="mb-0">{{ total_courses }}</h2>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-book fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Students</h5>
+                                    <h2 class="mb-0">{{ total_students }}</h2>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Classes</h5>
+                                    <h2 class="mb-0">{{ total_classes }}</h2>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-calendar-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Attendance</h5>
+                                    <h2 class="mb-0">{{ total_attendance }}</h2>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clipboard-check fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course-wise Reports -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Course-wise Reports</h5>
+                            <a href="{% url 'attendance:course_attendance_report' 0 %}" class="btn btn-sm btn-primary" style="display: none;">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Course</th>
+                                            <th>Students</th>
+                                            <th>Classes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in courses %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ course.name }}</strong><br>
+                                                <small class="text-muted">{{ course.code }}</small>
+                                            </td>
+                                            <td>
+                                                {% with course_students=Student.objects.filter|default:0 %}
+                                                {{ course_students.count|default:0 }}
+                                                {% endwith %}
+                                            </td>
+                                            <td>
+                                                {{ course.attendance_records.values|default:0 }}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'attendance:course_attendance_report' course.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-chart-bar"></i> View Report
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">No courses found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recent Activity</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_records %}
+                                <div class="list-group list-group-flush">
+                                    {% for record in recent_records %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">{{ record.student.user.get_full_name|default:record.student.user.username }}</h6>
+                                            <small class="text-muted">{{ record.date|date:"M d" }}</small>
+                                        </div>
+                                        <p class="mb-1">
+                                            <small>{{ record.course.name }}</small><br>
+                                            <span class="badge bg-{% if record.status == 'present' %}success{% else %}danger{% endif %}">
+                                                {{ record.status|title }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted text-center">No recent activity.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

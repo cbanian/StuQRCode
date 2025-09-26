@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Lecturer Dashboard - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Lecturer Dashboard</h2>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card modern-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-qrcode fa-2x text-primary mb-2"></i>
+                    <h4 class="card-title">{{ qr_codes_count|default:0 }}</h4>
+                    <p class="card-text text-muted">QR Codes Generated</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x text-success mb-2"></i>
+                    <h4 class="card-title">{{ students_count|default:0 }}</h4>
+                    <p class="card-text text-muted">Students</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-book fa-2x text-warning mb-2"></i>
+                    <h4 class="card-title">{{ courses_count|default:0 }}</h4>
+                    <p class="card-text text-muted">Courses</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                    <h4 class="card-title">{{ attendance_today|default:0 }}</h4>
+                    <p class="card-text text-muted">Attendance Today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-clock me-2"></i>Recent Attendance</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_attendance %}
+                        <div class="list-group list-group-flush">
+                            {% for attendance in recent_attendance %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ attendance.student.get_full_name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ attendance.course.name }}</small>
+                                        </div>
+                                        <small class="text-success">{{ attendance.timestamp|date:"M d, H:i" }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No recent attendance records.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-calendar-alt me-2"></i>Today's Schedule</h5>
+                </div>
+                <div class="card-body">
+                    {% if todays_sessions %}
+                        <div class="list-group list-group-flush">
+                            {% for session in todays_sessions %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ session.course.name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ session.start_time }} - {{ session.end_time }}</small>
+                                        </div>
+                                        <span class="badge bg-primary">{{ session.room }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No sessions scheduled for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'attendance:qr_code_create' %}" class="btn btn-primary-modern w-100">
+                                <i class="fas fa-plus me-2"></i>Generate QR Code
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'attendance:attendance_reports' %}" class="btn btn-outline-modern w-100">
+                                <i class="fas fa-chart-bar me-2"></i>View Reports
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'courses:course_create' %}" class="btn btn-outline-modern w-100">
+                                <i class="fas fa-book me-2"></i>Create Course
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'attendance:attendance_analytics' %}" class="btn btn-outline-modern w-100">
+                                <i class="fas fa-analytics me-2"></i>Analytics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

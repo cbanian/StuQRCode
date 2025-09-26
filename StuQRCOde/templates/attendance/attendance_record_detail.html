@@ -1,0 +1,136 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Attendance Record Details - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Attendance Record Details</h4>
+                    <a href="{% url 'attendance:attendance_record_list' %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Records
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Student Information</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td>{{ record.student.user.get_full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Student ID:</strong></td>
+                                    <td>{{ record.student.student_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>{{ record.student.user.email }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Course Information</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Course:</strong></td>
+                                    <td>{{ record.course.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Code:</strong></td>
+                                    <td>{{ record.course.code }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lecturer:</strong></td>
+                                    <td>{{ record.course.lecturer.user.get_full_name }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Attendance Details</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td>{{ record.date|date:"M d, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Time In:</strong></td>
+                                    <td>{{ record.time_in|time:"H:i:s" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td>
+                                        {% if record.status == 'present' %}
+                                            <span class="badge bg-success">Present</span>
+                                        {% elif record.status == 'late' %}
+                                            <span class="badge bg-warning">Late</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ record.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Marked By:</strong></td>
+                                    <td>{{ record.marked_by|title }}</td>
+                                </tr>
+                                {% if record.ip_address %}
+                                <tr>
+                                    <td><strong>IP Address:</strong></td>
+                                    <td>{{ record.ip_address }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if record.user_agent %}
+                                <tr>
+                                    <td><strong>User Agent:</strong></td>
+                                    <td><small>{{ record.user_agent }}</small></td>
+                                </tr>
+                                {% endif %}
+                                {% if record.qr_code %}
+                                <tr>
+                                    <td><strong>QR Code:</strong></td>
+                                    <td>
+                                        <a href="{% url 'attendance:qr_code_detail' record.qr_code.pk %}" class="btn btn-sm btn-outline-info">
+                                            View QR Code
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Additional Information</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>QR Code Schedule:</strong></td>
+                                    <td>{{ record.qr_code.schedule|default:"Not specified" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valid From:</strong></td>
+                                    <td>{{ record.qr_code.valid_from|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valid Until:</strong></td>
+                                    <td>{{ record.qr_code.valid_until|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Created At:</strong></td>
+                                    <td>{{ record.created_at|date:"M d, Y H:i:s" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

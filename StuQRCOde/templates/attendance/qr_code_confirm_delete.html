@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Delete QR Code - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirm Delete</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    </p>
+                    <h5 class="text-center">Are you sure you want to delete this QR code?</h5>
+                    <p class="text-center">
+                        <strong>{{ qr_code.course.name }} ({{ qr_code.course.code }})</strong>
+                    </p>
+                    <p class="text-center">
+                        Valid from {{ qr_code.valid_from|date:"M d, Y H:i" }} to {{ qr_code.valid_until|date:"M d, Y H:i" }}
+                    </p>
+                    <p class="text-muted text-center">
+                        This action cannot be undone. Associated attendance records will remain but will no longer reference this QR code.
+                    </p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <a href="{% url 'attendance:qr_code_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete QR Code
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

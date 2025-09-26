@@ -1,0 +1,182 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}QR Code Details - StuQRCOde{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">QR Code Details</h1>
+                <div>
+                    <a href="{% url 'attendance:qr_code_generate' qr_code.pk %}" class="btn btn-success me-2">
+                        <i class="fas fa-download"></i> Download QR Code
+                    </a>
+                    <a href="{% url 'attendance:qr_code_delete' qr_code.pk %}" class="btn btn-danger me-2">
+                        <i class="fas fa-trash"></i> Delete QR Code
+                    </a>
+                    <a href="{% url 'attendance:qr_code_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to QR Codes
+                    </a>
+                </div>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">QR Code Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4">Course:</dt>
+                                <dd class="col-sm-8">{{ qr_code.course.name }} ({{ qr_code.course.code }})</dd>
+
+                                <dt class="col-sm-4">Valid From:</dt>
+                                <dd class="col-sm-8">{{ qr_code.valid_from|date:"M d, Y H:i" }}</dd>
+
+                                <dt class="col-sm-4">Valid Until:</dt>
+                                <dd class="col-sm-8">{{ qr_code.valid_until|date:"M d, Y H:i" }}</dd>
+
+                                <dt class="col-sm-4">Status:</dt>
+                                <dd class="col-sm-8">
+                                    {% if not qr_code.is_active %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% elif qr_code.valid_until < current_time %}
+                                        <span class="badge bg-danger">Expired</span>
+                                    {% elif qr_code.valid_from > current_time %}
+                                        <span class="badge bg-warning">Not yet valid</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt class="col-sm-4">Current Time:</dt>
+                                <dd class="col-sm-8">{{ current_time|date:"M d, Y H:i" }}</dd>
+
+                                <dt class="col-sm-4">Created By:</dt>
+                                <dd class="col-sm-8">{{ qr_code.created_by.user.get_full_name }}</dd>
+
+                                <dt class="col-sm-4">Created At:</dt>
+                                <dd class="col-sm-8">{{ qr_code.created_at|date:"M d, Y H:i" }}</dd>
+
+                                <dt class="col-sm-4">Scan URL:</dt>
+                                <dd class="col-sm-8">
+                                    <small class="text-muted">{{ scan_url }}</small>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">QR Code Image</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <img src="{% url 'attendance:qr_code_generate' qr_code.pk %}" alt="QR Code" class="img-fluid border">
+                            </div>
+                            <p class="text-muted small">
+                                Scan this QR code with your mobile device to mark attendance for {{ qr_code.course.name }}
+                            </p>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Mobile Access:</strong> Use the mobile app or browser at {{ scan_url|truncatechars:50 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Statistics -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Attendance Statistics</h5>
+                </div>
+                <div class="card-body">
+                    {% with attendance_count=qr_code.attendance_records.count %}
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-primary">{{ attendance_count }}</h3>
+                                    <p class="text-muted mb-0">Total Scans</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-success">{{ present_count }}</h3>
+                                    <p class="text-muted mb-0">Present</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-warning">{{ late_count }}</h3>
+                                    <p class="text-muted mb-0">Late</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+            </div>
+
+            <!-- Recent Attendance Records -->
+            {% if qr_code.attendance_records.exists %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Attendance Records</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in qr_code.attendance_records.all|slice:":10" %}
+                                        <tr>
+                                            <td>{{ record.student.user.get_full_name }}</td>
+                                            <td>{{ record.date|date:"M d, Y" }}</td>
+                                            <td>{{ record.time_in|time:"H:i" }}</td>
+                                            <td>
+                                                {% if record.status == 'present' %}
+                                                    <span class="badge bg-success">Present</span>
+                                                {% elif record.status == 'late' %}
+                                                    <span class="badge bg-warning">Late</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ record.status|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if qr_code.attendance_records.count > 10 %}
+                            <div class="text-center mt-3">
+                                <small class="text-muted">Showing first 10 records</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
