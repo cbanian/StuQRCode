@@ -25,9 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-v8n*%g4&g=x5n@qrz=6vwv%v1fyjet+f!6!c9+i(w7@&uw4^8a')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'stuqrcode-app-production.up.railway.app').split(',')
+
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://stuqrcode-app-production.up.railway.app').split(',')
 
 # Add base URL for QR code generation
 BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
